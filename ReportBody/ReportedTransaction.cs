@@ -1,4 +1,6 @@
-﻿using System.Xml.Linq;
+﻿using Reporting.NRA.XmlStructure.Extensions;
+using Reporting.NRA.XmlStructure.Types;
+using System.Xml.Linq;
 
 namespace Reporting.NRA.XmlStructure.ReportBody
 {
@@ -21,7 +23,7 @@ namespace Reporting.NRA.XmlStructure.ReportBody
         /// the time of the day as specified in [ISO-8601] and the time zone
         /// (i.e. 'YYYY-MM-DDThh:mm:ss.SSSZ' if the time refers to the UTC time zone, otherwise 'YYYY-MM-DDThh:mm:ss.SSS-hh:mm' where hh : mm is the time shift from the UTC time zone).
         /// </summary>
-        public DateTime DateTime { get; set; } 
+        public DateTime DateTime { get; set; }
 
         /// <summary>
         /// •	CESOP701: Execution Date 
@@ -30,7 +32,7 @@ namespace Reporting.NRA.XmlStructure.ReportBody
         /// •	CESOP704: Purchase Date 
         /// •	CESOP709: Other Date
         /// </summary>
-        public string TransactionDateType { get; set; } = null!;
+        public TransactionDateType TransactionDateType { get; set; }
 
         /// <summary>
         /// Article 243d (2b). The amount and the currency of the payment or of the payment refund.
@@ -45,7 +47,7 @@ namespace Reporting.NRA.XmlStructure.ReportBody
         /// <summary>
         /// Used Only For Creating The XML
         /// </summary>
-        public string PaymentMethod { get; set; } = "PaymentMethod";
+        public string PaymentMethod { get; private set; } = "PaymentMethod";
 
         /// <summary>
         /// •	Card payment: The credit card as a means of payment. 
@@ -57,7 +59,7 @@ namespace Reporting.NRA.XmlStructure.ReportBody
         /// •	Intermediary: The intermediary as a means of payment. 
         /// •	Other: Other mean of payment. Please specify it in the element PaymentMethodOther.
         /// </summary>
-        public string PaymentMethodType { get; set; } = null!;
+        public PaymentMethodType PaymentMethodType { get; set; }
 
         /// <summary>
         /// Article 243d (2e). Information that the payment is initiated at the physical premises of the merchant. 
@@ -73,10 +75,10 @@ namespace Reporting.NRA.XmlStructure.ReportBody
 
         /// <summary>
         /// •	IBAN: The IBAN of the payer/payee’s payment account which unambiguously identifies, and gives the location of, the payer/payee. 
-        /// •	OBAN: The OBAN of the payer/payee’s payment account which unambiguously identifies, and gives the location of, the payer/payee.
+        /// •	OBAN: The OBAN of the payer/payee’s payment account which unambiguously identifies, and gives the location of, the payer/payee. OBAN = Other Bank Account Number
         /// •	Other: Other identifier which unambiguously identifies, and gives the location of, the payer/payee.
         /// </summary>
-        public string PayerMSSource { get; set; } = null!;
+        public BankIdentityType PayerMSSource { get; set; }
 
         /// <summary>
         /// XElement representation of the report model
@@ -86,17 +88,17 @@ namespace Reporting.NRA.XmlStructure.ReportBody
                 new XAttribute(nameof(IsRefund), IsRefund ? "true" : "false"),
                 new XElement(Constants.NameSpaceCesop + nameof(TransactionIdentifier), TransactionIdentifier),
                 new XElement(Constants.NameSpaceCesop + nameof(DateTime), DateTime.ToString("s"),
-                    new XAttribute(nameof(TransactionDateType), TransactionDateType)
+                    new XAttribute(nameof(TransactionDateType), Enum.GetName(TransactionDateType))
                 ),
                 new XElement(Constants.NameSpaceCesop + nameof(Amount), Amount,
                     new XAttribute(nameof(Currency), Currency)
                 ),
                 new XElement(Constants.NameSpaceCesop + nameof(PaymentMethod),
-                    new XElement(Constants.NameSpaceCommonType + nameof(PaymentMethodType), PaymentMethodType)
+                    new XElement(Constants.NameSpaceCommonType + nameof(PaymentMethodType), PaymentMethodType.GetDescription())
                 ),
-                new XElement(Constants.NameSpaceCesop + nameof(InitiatedAtPhysicalPremisesOfMerchant), InitiatedAtPhysicalPremisesOfMerchant ? "true" : "false"),
+                new XElement(Constants.NameSpaceCesop + nameof(InitiatedAtPhysicalPremisesOfMerchant), InitiatedAtPhysicalPremisesOfMerchant.ToString().ToUpperInvariant()),
                 new XElement(Constants.NameSpaceCesop + nameof(PayerMS), PayerMS,
-                    new XAttribute(nameof(PayerMSSource), PayerMSSource)
+                    new XAttribute(nameof(PayerMSSource), Enum.GetName(PayerMSSource))
                 )
         );
     }

@@ -1,7 +1,9 @@
-﻿using System.Xml.Linq;
+﻿using Reporting.NRA.XmlStructure.Types;
+using System.Xml.Linq;
 
 namespace Reporting.NRA.XmlStructure.ReportBody
 {
+
     public class ReportedPayee
     {
         /// <summary>
@@ -16,7 +18,7 @@ namespace Reporting.NRA.XmlStructure.ReportBody
         /// •	PERSON: Person name
         /// •	OTHER: Other name 
         /// </summary>
-        public string NameType { get; set; } = null!;
+        public NameType NameType { get; set; }
 
         /// <summary>
         /// Article 243d (1d). The country of the payee's origin (ISO-3166 Alpha 2).
@@ -35,7 +37,7 @@ namespace Reporting.NRA.XmlStructure.ReportBody
         /// •	CESOP304: registeredOffice 
         /// •	CESOP309: unspecified
         /// </summary>
-        public string LegalAddressType { get; set; } = null!;
+        public LegalAddressType LegalAddressType { get; set; }
 
         /// <summary>
         /// The Country Code of the payee’s address (ISO-3166 Alpha 2)
@@ -78,12 +80,13 @@ namespace Reporting.NRA.XmlStructure.ReportBody
         /// The Country Code of the payee’s address (ISO-3166 Alpha 2)
         /// </summary>
         public string CountryCodeAccount { get; set; } = null!;
+
         /// <summary>
         /// •	IBAN: The IBAN of the payer/payee’s payment account which unambiguously identifies, and gives the location of, the payer/payee. 
         /// •	OBAN: The OBAN of the payer/payee’s payment account which unambiguously identifies, and gives the location of, the payer/payee.
         /// •	Other: Other identifier which unambiguously identifies, and gives the location of, the payer/payee.
         /// </summary>
-        public string Type { get; set; } = null!;
+        public BankIdentityType Type { get; set; }
 
         /// <summary>
         /// The parent Reported Transaction element listing all the received payments and payment refunds for the given payee reported by the PSP.
@@ -101,7 +104,7 @@ namespace Reporting.NRA.XmlStructure.ReportBody
         /// •	CESOP2: Corrected Data
         /// •	CESOP3: Deletion of Data
         /// </summary>
-        public string DocTypeIndic { get; set; } = null!;
+        public DocTypeIndicType DocTypeIndic { get; set; }
 
         /// <summary>
         /// The unique reference of the parent element in form of a UUID version 4.
@@ -114,9 +117,9 @@ namespace Reporting.NRA.XmlStructure.ReportBody
         /// </summary>
         /// <returns>XElement</returns>
         public XElement ToXml() => new(Constants.NameSpaceCesop + nameof(ReportedPayee),
-                new XElement(Constants.NameSpaceCesop + nameof(Name), Name, new XAttribute(nameof(NameType), NameType)),
+                new XElement(Constants.NameSpaceCesop + nameof(Name), Name, new XAttribute(nameof(NameType), Enum.GetName(NameType))),
                 new XElement(Constants.NameSpaceCesop + nameof(Country), Country),
-                new XElement(Constants.NameSpaceCesop + nameof(Address), new XAttribute(nameof(LegalAddressType), LegalAddressType),
+                new XElement(Constants.NameSpaceCesop + nameof(Address), new XAttribute(nameof(LegalAddressType), Enum.GetName(LegalAddressType)),
                         new XElement(Constants.NameSpaceCommonType + "CountryCode", CountryCodeAddress),
                         new XElement(Constants.NameSpaceCommonType + nameof(AddressFree), AddressFree)
                     ),
@@ -127,11 +130,11 @@ namespace Reporting.NRA.XmlStructure.ReportBody
                     ),
                 new XElement(Constants.NameSpaceCesop + nameof(AccountIdentifier), AccountIdentifier,
                         new XAttribute("CountryCode", CountryCodeAccount),
-                        new XAttribute(nameof(Type), Type)
+                        new XAttribute(nameof(Type), Enum.GetName(Type))
                     ),
                 ReportedTransactions.Select(x => x.ToXml()),
                 new XElement(Constants.NameSpaceCesop + nameof(DocSpec),
-                        new XElement(Constants.NameSpaceCommonType + nameof(DocTypeIndic), DocTypeIndic),
+                        new XElement(Constants.NameSpaceCommonType + nameof(DocTypeIndic), Enum.GetName(DocTypeIndic)),
                         new XElement(Constants.NameSpaceCommonType + nameof(DocRefId), DocRefId)
                     )
             );

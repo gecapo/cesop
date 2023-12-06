@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using Reporting.NRA.XmlStructure.Types;
+using System.Xml.Linq;
 
 namespace Reporting.NRA.XmlStructure.ReportBody
 {
@@ -27,7 +28,7 @@ namespace Reporting.NRA.XmlStructure.ReportBody
         /// •	PERSON: Person name
         /// •	OTHER: Other name 
         /// </summary>
-        public string NameType { get; set; } = null!;
+        public NameType NameType { get; set; }
 
         public ReportingPSP(string bic, string reportingPSPName)
         {
@@ -41,7 +42,7 @@ namespace Reporting.NRA.XmlStructure.ReportBody
         /// <returns>XElement</returns>
         public XElement ToXml() => new(Constants.NameSpaceCesop + nameof(ReportingPSP),
                 new XElement(Constants.NameSpaceCesop + nameof(PSPId), new XAttribute(nameof(PSPIdType), PSPIdType), PSPId),
-                new XElement(Constants.NameSpaceCesop + nameof(Name), new XAttribute(nameof(NameType), NameType), Name)
+                new XElement(Constants.NameSpaceCesop + nameof(Name), new XAttribute(nameof(NameType), Enum.GetName(NameType)), Name)
             );
     }
 }

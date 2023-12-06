@@ -1,6 +1,6 @@
-﻿using System.Xml.Linq;
-using Reporting.NRA.XmlStructure.ReportBody;
+﻿using Reporting.NRA.XmlStructure.ReportBody;
 using Reporting.NRA.XmlStructure.ReportHeader;
+using System.Xml.Linq;
 
 namespace Reporting.NRA.XmlStructure
 {

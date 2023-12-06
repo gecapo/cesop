@@ -7,7 +7,7 @@ namespace Reporting.NRA.XmlStructure.ReportHeader
         /// <summary>
         /// Article 243d (2a). The element represents the quarter to which the payment data refers.
         /// </summary>
-        private readonly int Quater; 
+        private readonly int Quater;
 
         /// <summary>
         /// rticle 243d (2a). The element represents the year to which the payment data refers.
